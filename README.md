@@ -1,11 +1,13 @@
-# Vscode-Debugger-Magic
+# Email-Notify-Magic
 
-Attach a debugging session of visual studio code to the jupyter notebook
+Send an email after cell execution complete.
+
+Obs: Currently only used with gmail.
 
 ## Install
 
 ```
-pip install vscode-debugger-magic
+pip install email-notify-magic
 ```
 
 ## Usage
@@ -13,34 +15,56 @@ pip install vscode-debugger-magic
 - Load the magic extension:
 
 ```
-%load_ext vscode_debugger_magic
+%load_ext email_notify_magic
 ```
 
-- Run the magic in jupyter notebook
+- Run the cell magic in jupyter notebook (see options bellow):
 
 ```
-%vscodedebugger
+%%email email@gmail.com
 ```
 
-- Activate the debugging session in Visual studio code in the Python attached mode:
+- Insert password in the prompt and **done**
 
-```json
-{
-    "name": "Python: Attach",
-    "type": "python",
-    "request": "attach",
-    "port": 5678,
-    "host": "localhost"
-},
-```
-
-- Set breakpoints in vscode
-- Invoke functions to be debugged
+- Make sure your email account is enable for such usage (see [link](https://realpython.com/python-send-email/) and [less-secure-apps](https://myaccount.google.com/lesssecureapps)). It is recommend not to use personal accounts.
 
 ## Option:
 
-- `--timeout`or `-t` seconds: timeout to attach debugger
+- Sender and receiver same email address if `--to` is not supplied.
 
 ```
-%vscodedebugger -t 10
+%%email email@gmail.com
 ```
+
+- Set receiver with `--to` [`-t`]:
+
+```
+%%email email@gmail.com --to receiver@gmail.com
+```
+
+- Set e-mail subject `--subject` [`-s`]:
+
+```
+%%email email@gmail.com --s 'My subject'
+```
+
+- Set e-mail body `--body` [`-b`]:
+
+```
+%%email email@gmail.com --body 'From cell x'
+```
+
+Notice that the cell output is used if `--body` is not provided.
+
+- Save password in jupyter session for latter usage `--keep-password` [`-k`]:
+
+```
+%%email email@gmail.com --body 'From cell x' -k
+```
+
+The next cell evoked with `%%email` will not require the password.
+
+
+## Others
+
+- Notification after cell execution inspired by [jupyter-notify](https://github.com/ShopRunner/jupyter-notify)
