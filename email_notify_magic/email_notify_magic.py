@@ -42,6 +42,7 @@ class EmailNotifier(Magics):
             # password = self.
 
         if cell is not None:
+            server = create_authenticated_server(fromemail)
             output = get_ipython().run_cell(cell)
             # print(output.result)
             try: #Ref: https://github.com/ShopRunner/jupyter-notify/blob/master/jupyternotify/jupyternotify.py
@@ -50,9 +51,28 @@ class EmailNotifier(Magics):
                 output_as_str = None # can't convert to string. Use default message
             if output_as_str is not None and output_as_str != 'None':
                 text_body = 'Cell output: \n' + output_as_str
-            send_email_gmail(fromemail, toemail, text_body, subject, password)
+            send_email_from_authenticated_server(server, fromemail, toemail, text_body, subject)
 
         return
+
+def create_authenticated_server(sender_email, password = None, smtp_server = "smtp.gmail.com", port = 465):
+    if password is None:
+        password = getpass.getpass("Type your password and press enter: ")
+    context = ssl.create_default_context()
+    server = smtplib.SMTP_SSL(smtp_server, port, context=context)
+    # with smtplib.SMTP_SSL(smtp_server, port, context=context) as server:
+    server.login(sender_email, password)
+    return server
+
+def send_email_from_authenticated_server(server, sender_email, receiver_email, message_text = None, subject = None):
+    if subject is None:
+        subject = 'email from python'
+    if message_text is None:
+        message_text = 'Email sent from python'
+    msg = 'Subject: {}\n\n{}'.format(subject, message_text)
+    server.sendmail(sender_email, receiver_email, msg)
+    server.quit()
+    return
 
 def send_email_gmail(e_from, e_to, message_text = None, subject = None, password = None):
     port = 465  # For SSL
