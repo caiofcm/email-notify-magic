@@ -10,7 +10,7 @@ README = (HERE / "README.md").read_text()
 # This call to setup() does all the work
 setup(
     name="email-notify-magic",
-    version="0.0.1",
+    version="0.0.2",
     description="A Jupyter magic for sending e-mail after cell completion",
     long_description=README,
     long_description_content_type="text/markdown",
