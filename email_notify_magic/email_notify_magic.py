@@ -8,7 +8,7 @@ import getpass
 @magics_class
 class EmailNotifier(Magics):
 
-    session_password = ''
+    __session_password = ''
 
 
     @magic_arguments.magic_arguments()
@@ -20,7 +20,9 @@ class EmailNotifier(Magics):
     @magic_arguments.argument('--body', '-b', help='Email Body message',
         default='The jupyter cell execution is completed.'
     )
-    @magic_arguments.argument('--keep-password', '-k', help='Save password in the current jupyter session for latter usage', action='store_true')
+    @magic_arguments.argument('--keep-password', '-k',
+        help='Save password in the current jupyter session for latter usage',
+        action='store_true')
     @line_cell_magic
     def email(self, line, cell=None):
         args = magic_arguments.parse_argstring(self.email, line)
@@ -33,16 +35,16 @@ class EmailNotifier(Magics):
         subject = args.subject
         text_body = args.body
 
-        if self.session_password == '':
+        if self.__session_password == '' or args.keep_password:
             password = getpass.getpass("Type your password and press enter: ")
         else:
-            password = self.session_password
+            password = self.__session_password
         if args.keep_password:
-            self.session_password = password
+            self.__session_password = password
             # password = self.
 
         if cell is not None:
-            server = create_authenticated_server(fromemail)
+            server = create_authenticated_server(fromemail, self.__session_password)
             output = get_ipython().run_cell(cell)
             # print(output.result)
             try: #Ref: https://github.com/ShopRunner/jupyter-notify/blob/master/jupyternotify/jupyternotify.py

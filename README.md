@@ -56,7 +56,7 @@ pip install email-notify-magic
 
 Notice that the cell output is used if `--body` is not provided.
 
-- Save password in jupyter session for latter usage `--keep-password` [`-k`]:
+- Save password in jupyter session for latter usage `--keep-password` [`-k`] (using `-k` in the next call again will re-prompt for password):
 
 ```
 %%email email@gmail.com --body 'From cell x' -k
